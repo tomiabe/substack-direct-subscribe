@@ -17,15 +17,19 @@
     <!-- ===== Card layout ===== -->
     <div class="bg-white rounded-xl border border-gray-200 p-8 mb-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-1">Card layout</h2>
-      <p class="text-sm text-gray-400 mb-6">Default form variant — use inline or in a sidebar.</p>
+      <p class="text-sm text-gray-400 mb-6">Compact form for sidebars, end-of-article sections, or modals.</p>
       <div id="card-form"></div>
     </div>
 
     <!-- ===== Banner layout ===== -->
-    <div class="bg-emerald-900 rounded-xl p-8 mb-6">
-      <h2 class="text-lg font-semibold text-white mb-1">Banner layout</h2>
-      <p class="text-sm text-emerald-200 mb-6">For hero sections and callout areas.</p>
-      <div id="banner-form"></div>
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-800 via-emerald-900 to-emerald-950 p-10 md:p-12 mb-6">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-20 -mt-20"></div>
+      <div class="absolute bottom-0 left-0 w-48 h-48 bg-emerald-400/5 rounded-full -ml-16 -mb-16"></div>
+      <div class="relative z-10">
+        <h2 class="text-lg font-semibold text-emerald-100 mb-1">Banner layout</h2>
+        <p class="text-sm text-emerald-300/80 mb-8 max-w-xl">Full-width hero form for homepage headers, landing pages, or site-wide callout sections.</p>
+        <div id="banner-form" class="max-w-2xl"></div>
+      </div>
     </div>
 
     <!-- ===== Popup ===== -->
@@ -92,14 +96,14 @@
                 <input type="email" placeholder="Enter your email address" required
                   class="form-email w-full h-14 px-6 rounded-md border-2 text-base transition-all
                     ${isBanner
-                      ? "border-transparent bg-white text-gray-900 placeholder:text-gray-400 focus:border-white/50"
+                      ? "border-emerald-400/30 bg-emerald-900/50 text-white placeholder:text-emerald-300/50 focus:border-emerald-300 focus:bg-emerald-900/80"
                       : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-emerald-600"
                     }" />
               </div>
               <button type="submit"
                 class="form-submit h-14 px-8 rounded-md font-bold text-base whitespace-nowrap transition-all
                   ${isBanner
-                    ? "bg-white text-emerald-900 hover:bg-emerald-50"
+                    ? "bg-emerald-400 text-emerald-950 hover:bg-emerald-300"
                     : "bg-emerald-600 text-white hover:bg-emerald-700"
                   }">
                 Subscribe
@@ -120,7 +124,7 @@
           feedback.innerHTML = `
             <div class="rounded-lg border p-4 text-center ${
               isBanner
-                ? "bg-white/10 text-white border-white/20"
+                ? "bg-emerald-800/50 text-emerald-100 border-emerald-700"
                 : "bg-green-50 text-green-900 border-green-200"
             }">
               <p class="font-semibold">You&rsquo;re in!</p>
@@ -135,10 +139,16 @@
             formInner.style.display = "";
             feedback.innerHTML = "";
             emailInput.value = "";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Subscribe";
           };
         } else if (status === "error") {
           feedback.innerHTML = `
-            <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-center text-red-900">
+            <div class="rounded-lg border ${
+              isBanner
+                ? "bg-red-900/30 text-red-200 border-red-800"
+                : "bg-red-50 text-red-900 border-red-200"
+            } p-4 text-center">
               <p class="font-semibold">Connection issue</p>
               <p class="text-sm mt-1">
                 Check your connection, or
