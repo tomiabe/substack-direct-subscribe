@@ -3,40 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Substack Direct Subscribe — Demo</title>
+  <title>Substack Direct Subscribe — Live Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
   <main class="max-w-2xl mx-auto px-4 py-20">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Substack Direct Subscribe</h1>
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-1">Substack Direct Subscribe</h1>
     <p class="text-gray-500 mb-10">
-      Collect email subscriptions directly to your Substack publication — no server required.
+      Collect email subscriptions directly to your Substack. No server required.
     </p>
 
+    <!-- ===== Card layout ===== -->
     <div class="bg-white rounded-xl border border-gray-200 p-8 mb-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-1">Card layout</h2>
-      <p class="text-sm text-gray-400 mb-6">The default form variant.</p>
-      <div id="demo-card">
-        <p class="text-sm text-amber-600 bg-amber-50 rounded-md px-4 py-3 border border-amber-200">
-          Configure <code class="font-mono text-xs bg-amber-100 px-1 rounded">substackUrl</code>
-          and <code class="font-mono text-xs bg-amber-100 px-1 rounded">publicationId</code>
-          in your implementation. See README for setup.
-        </p>
-      </div>
+      <p class="text-sm text-gray-400 mb-6">Default form variant — use inline or in a sidebar.</p>
+      <div id="card-form"></div>
     </div>
 
+    <!-- ===== Banner layout ===== -->
     <div class="bg-emerald-900 rounded-xl p-8 mb-6">
       <h2 class="text-lg font-semibold text-white mb-1">Banner layout</h2>
       <p class="text-sm text-emerald-200 mb-6">For hero sections and callout areas.</p>
-      <div id="demo-banner">
-        <p class="text-sm text-emerald-200 bg-emerald-800/50 rounded-md px-4 py-3 border border-emerald-700">
-          Configure <code class="font-mono text-xs bg-emerald-700 px-1 rounded">substackUrl</code>
-          and <code class="font-mono text-xs bg-emerald-700 px-1 rounded">publicationId</code>
-          in your implementation. See README for setup.
-        </p>
-      </div>
+      <div id="banner-form"></div>
     </div>
 
+    <!-- ===== Popup ===== -->
     <div class="bg-white rounded-xl border border-gray-200 p-8">
       <h2 class="text-lg font-semibold text-gray-900 mb-1">Popup</h2>
       <p class="text-sm text-gray-400 mb-6">Timed modal that auto-appears after a delay.</p>
@@ -48,14 +40,13 @@
       </button>
     </div>
 
-    <div class="mt-10 pt-8 border-t border-gray-200 text-center">
-      <p class="text-sm text-gray-400">
-        Built by <a href="https://github.com/tomiabe" class="text-emerald-600 hover:underline">Tomi Abe</a>.
-        MIT License.
-      </p>
+    <div class="mt-10 pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
+      Built by <a href="https://github.com/tomiabe" class="text-emerald-600 hover:underline">Tomi Abe</a>.
+      MIT License.
     </div>
   </main>
 
+  <!-- Popup overlay -->
   <div id="popup-overlay" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
     <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8 md:p-10">
       <button
@@ -69,23 +60,173 @@
         <h3 class="text-2xl font-bold text-gray-900 mb-2">Never miss an update!</h3>
         <p class="text-sm text-gray-500 leading-relaxed">Subscribe to our newsletter for weekly stories and analysis.</p>
       </div>
-      <div id="popup-form">
-        <p class="text-sm text-amber-600 bg-amber-50 rounded-md px-4 py-3 border border-amber-200">
-          Configure in your implementation. See README for setup.
-        </p>
-      </div>
+      <div id="popup-form"></div>
     </div>
   </div>
 
   <script>
-    document.getElementById('trigger-popup').addEventListener('click', function() {
-      document.getElementById('popup-overlay').classList.remove('hidden');
-    });
-    document.getElementById('close-popup').addEventListener('click', function() {
-      document.getElementById('popup-overlay').classList.add('hidden');
-    });
-    document.getElementById('popup-overlay').addEventListener('click', function(e) {
-      if (e.target === this) this.classList.add('hidden');
+    // ── Config ────────────────────────────────────────────────────────────
+    // Replace these with your own Substack details:
+    const SUBSTACK_URL = "https://susinsight.substack.com";
+    const PUBLICATION_ID = "2543406";
+    // ───────────────────────────────────────────────────────────────────────
+
+    const SUBSCRIBED_KEY = "sds_subscribed";
+    const DISMISSED_KEY = "sds_dismissed";
+
+    /* ── Form renderer ───────────────────────────────────────────────────
+     * Renders a complete email-capture form into `containerId`.
+     * layout: "card" | "banner"
+     */
+    function renderForm(containerId, layout) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const isBanner = layout === "banner";
+
+      container.innerHTML = `
+        <div class="form-root">
+          <div class="form-inner">
+            <div class="form-field flex flex-col sm:flex-row gap-3 ${isBanner ? "" : "max-w-lg mx-auto"}">
+              <div class="form-input-wrapper flex-1">
+                <input type="email" placeholder="Enter your email address" required
+                  class="form-email w-full h-14 px-6 rounded-md border-2 text-base transition-all
+                    ${isBanner
+                      ? "border-transparent bg-white text-gray-900 placeholder:text-gray-400 focus:border-white/50"
+                      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-emerald-600"
+                    }" />
+              </div>
+              <button type="submit"
+                class="form-submit h-14 px-8 rounded-md font-bold text-base whitespace-nowrap transition-all
+                  ${isBanner
+                    ? "bg-white text-emerald-900 hover:bg-emerald-50"
+                    : "bg-emerald-600 text-white hover:bg-emerald-700"
+                  }">
+                Subscribe
+              </button>
+            </div>
+          </div>
+          <div class="form-feedback mt-4"></div>
+        </div>
+      `;
+
+      const formInner = container.querySelector(".form-inner");
+      const feedback = container.querySelector(".form-feedback");
+      const emailInput = container.querySelector(".form-email");
+      const submitBtn = container.querySelector(".form-submit");
+
+      const setStatus = (status, message) => {
+        if (status === "success") {
+          feedback.innerHTML = `
+            <div class="rounded-lg border p-4 text-center ${
+              isBanner
+                ? "bg-white/10 text-white border-white/20"
+                : "bg-green-50 text-green-900 border-green-200"
+            }">
+              <p class="font-semibold">You&rsquo;re in!</p>
+              <p class="text-sm mt-1 opacity-80">Check your inbox for a confirmation email.</p>
+              <button class="reset-btn text-xs underline decoration-dotted underline-offset-4 mt-2 opacity-60 hover:opacity-100">
+                Subscribe another email
+              </button>
+            </div>
+          `;
+          formInner.style.display = "none";
+          feedback.querySelector(".reset-btn").onclick = () => {
+            formInner.style.display = "";
+            feedback.innerHTML = "";
+            emailInput.value = "";
+          };
+        } else if (status === "error") {
+          feedback.innerHTML = `
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-center text-red-900">
+              <p class="font-semibold">Connection issue</p>
+              <p class="text-sm mt-1">
+                Check your connection, or
+                <a href="${SUBSTACK_URL}/subscribe" target="_blank" rel="noopener noreferrer"
+                   class="underline font-semibold">subscribe directly on Substack</a>.
+              </p>
+              <button class="reset-btn text-xs underline decoration-dotted underline-offset-4 mt-2 opacity-60 hover:opacity-100">
+                Try again
+              </button>
+            </div>
+          `;
+          feedback.querySelector(".reset-btn").onclick = () => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Subscribe";
+            feedback.innerHTML = "";
+          };
+        }
+      };
+
+      submitBtn.onclick = async (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        if (!email) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Subscribing…";
+
+        try {
+          await fetch(SUBSTACK_URL + "/api/v1/free", {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+              email,
+              first_url: window.location.href,
+              current_url: window.location.href,
+              landingPublicationId: PUBLICATION_ID,
+            }).toString(),
+          });
+
+          setStatus("success");
+
+          if (containerId === "popup-form") {
+            localStorage.setItem(SUBSCRIBED_KEY, "true");
+          }
+        } catch {
+          setStatus("error");
+        }
+      };
+
+      emailInput.onkeydown = (e) => {
+        if (e.key === "Enter") submitBtn.click();
+      };
+    }
+
+    // ── Render forms ──────────────────────────────────────────────────────
+    renderForm("card-form", "card");
+    renderForm("banner-form", "banner");
+    renderForm("popup-form", "card");
+
+    // ── Popup controls ────────────────────────────────────────────────────
+    const overlay = document.getElementById("popup-overlay");
+
+    document.getElementById("trigger-popup").onclick = () => {
+      if (localStorage.getItem(SUBSCRIBED_KEY) !== "true") {
+        overlay.classList.remove("hidden");
+      } else {
+        alert("You've already subscribed!");
+      }
+    };
+
+    document.getElementById("close-popup").onclick = () => {
+      overlay.classList.add("hidden");
+      sessionStorage.setItem(DISMISSED_KEY, "true");
+    };
+
+    overlay.onclick = (e) => {
+      if (e.target === overlay) {
+        overlay.classList.add("hidden");
+        sessionStorage.setItem(DISMISSED_KEY, "true");
+      }
+    };
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !overlay.classList.contains("hidden")) {
+        overlay.classList.add("hidden");
+        sessionStorage.setItem(DISMISSED_KEY, "true");
+      }
     });
   </script>
 </body>
