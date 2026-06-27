@@ -1,0 +1,24 @@
+{
+  "name": "substack-direct-subscribe",
+  "version": "1.0.0",
+  "description": "Collect email subscriptions to your Substack publication directly from your website — no server required.",
+  "keywords": [
+    "substack",
+    "newsletter",
+    "subscribe",
+    "email",
+    "subscription",
+    "react",
+    "nextjs"
+  ],
+  "homepage": "https://github.com/tomiabe/substack-direct-subscribe",
+  "license": "MIT",
+  "author": "Tomi Abe",
+  "main": "src/SubstackForm.tsx",
+  "files": [
+    "src/"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  }
+}

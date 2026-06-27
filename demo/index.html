@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Substack Direct Subscribe — Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+  <main class="max-w-2xl mx-auto px-4 py-20">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Substack Direct Subscribe</h1>
+    <p class="text-gray-500 mb-10">
+      Collect email subscriptions directly to your Substack publication — no server required.
+    </p>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-8 mb-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-1">Card layout</h2>
+      <p class="text-sm text-gray-400 mb-6">The default form variant.</p>
+      <div id="demo-card">
+        <p class="text-sm text-amber-600 bg-amber-50 rounded-md px-4 py-3 border border-amber-200">
+          Configure <code class="font-mono text-xs bg-amber-100 px-1 rounded">substackUrl</code>
+          and <code class="font-mono text-xs bg-amber-100 px-1 rounded">publicationId</code>
+          in your implementation. See README for setup.
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-emerald-900 rounded-xl p-8 mb-6">
+      <h2 class="text-lg font-semibold text-white mb-1">Banner layout</h2>
+      <p class="text-sm text-emerald-200 mb-6">For hero sections and callout areas.</p>
+      <div id="demo-banner">
+        <p class="text-sm text-emerald-200 bg-emerald-800/50 rounded-md px-4 py-3 border border-emerald-700">
+          Configure <code class="font-mono text-xs bg-emerald-700 px-1 rounded">substackUrl</code>
+          and <code class="font-mono text-xs bg-emerald-700 px-1 rounded">publicationId</code>
+          in your implementation. See README for setup.
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-1">Popup</h2>
+      <p class="text-sm text-gray-400 mb-6">Timed modal that auto-appears after a delay.</p>
+      <button
+        id="trigger-popup"
+        class="h-12 px-6 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-colors"
+      >
+        Preview popup
+      </button>
+    </div>
+
+    <div class="mt-10 pt-8 border-t border-gray-200 text-center">
+      <p class="text-sm text-gray-400">
+        Built by <a href="https://github.com/tomiabe" class="text-emerald-600 hover:underline">Tomi Abe</a>.
+        MIT License.
+      </p>
+    </div>
+  </main>
+
+  <div id="popup-overlay" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+      <button
+        id="close-popup"
+        class="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+        aria-label="Close"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="text-center mb-6">
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Never miss an update!</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Subscribe to our newsletter for weekly stories and analysis.</p>
+      </div>
+      <div id="popup-form">
+        <p class="text-sm text-amber-600 bg-amber-50 rounded-md px-4 py-3 border border-amber-200">
+          Configure in your implementation. See README for setup.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('trigger-popup').addEventListener('click', function() {
+      document.getElementById('popup-overlay').classList.remove('hidden');
+    });
+    document.getElementById('close-popup').addEventListener('click', function() {
+      document.getElementById('popup-overlay').classList.add('hidden');
+    });
+    document.getElementById('popup-overlay').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
